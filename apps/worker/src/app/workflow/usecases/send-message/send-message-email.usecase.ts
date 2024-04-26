@@ -17,6 +17,7 @@ import {
   IAttachmentOptions,
   IEmailOptions,
   LogCodeEnum,
+  IEmailHeader,
 } from '@novu/shared';
 import * as Sentry from '@sentry/node';
 import {
@@ -264,6 +265,18 @@ export class SendMessageEmail extends SendMessageBase {
         }
     );
 
+    const headers: IEmailHeader[] = [];
+    if (overrides.headers) {
+      const headersArray = Array.isArray(overrides.headers) ? overrides.headers : [overrides.headers];
+      const tempEmail = (Array.isArray(email) ? email : [email]).join(',');
+      for (const item of headersArray) {
+        const tempValue = await this.compileEmailTemplateUsecase.renderContent(item.value, {
+          subscriber: { email: tempEmail, subscriberId: subscriber.subscriberId },
+        });
+        headers.push({ key: item.key, value: tempValue });
+      }
+    }
+
     const mailData: IEmailOptions = createMailData(
       {
         to: email,
@@ -278,6 +291,7 @@ export class SendMessageEmail extends SendMessageBase {
           workflowIdentifier: command.identifier,
           subscriberId: subscriber.subscriberId,
         },
+        headers: headers.length > 0 ? headers : undefined,
       },
       overrides || {}
     );

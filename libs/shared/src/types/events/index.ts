@@ -19,6 +19,11 @@ export interface IAttachmentOptions {
   channels?: ChannelTypeEnum[];
 }
 
+export interface IEmailHeader {
+  key: string;
+  value: string;
+}
+
 export interface IEmailOptions {
   to: string[];
   subject: string;
@@ -34,6 +39,7 @@ export interface IEmailOptions {
   notificationDetails?: any;
   ipPoolName?: string;
   customData?: Record<string, Record<string, unknown>>;
+  headers?: IEmailHeader[];
 }
 
 export interface ITriggerPayload {

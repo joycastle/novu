@@ -135,7 +135,7 @@ export class CompileEmailTemplate {
     return { html, content, subject, senderName };
   }
 
-  private async renderContent(
+  public async renderContent(
     content: string,
     payload: Record<string, unknown>
   ) {
